@@ -1,0 +1,71 @@
+version: '3.9' # Specify the Docker Compose file format version
+
+services:
+  app:
+    image: node:18
+    container_name: my_app_container
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" # Expose container port 3000 to host port 3000
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+    env_file:
+      - ./config/.env # Load environment variables from a file
+    volumes:
+      - ./app:/usr/src/app # Mount host directory to container
+      - logs:/var/log/myapp
+    depends_on:
+      - db # Ensure db starts before app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always
+    networks:
+      - app_network
+
+  db:
+    image: mariadb:10.7
+    container_name: my_db_container
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: secret
+    volumes:
+      - db_data:/var/lib/mysql # Persist database data
+    networks:
+      - app_network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    restart: unless-stopped
+
+volumes:
+  db_data: {}
+  logs: {}
+  redis_data: {}
+
+networks:
+  app_network:
+    driver: bridge
