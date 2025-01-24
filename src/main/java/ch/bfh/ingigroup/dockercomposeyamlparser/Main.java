@@ -1,6 +1,7 @@
 package ch.bfh.ingigroup.dockercomposeyamlparser;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,11 +9,28 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Deprecated
 public class Main {
 
+    // DO NOT USE THIS CLASS!
+    // This class is deprecated and will be removed in the next version.
+    // Use the Unit tests instead.
+
+    public static void main(String[] args) throws Exception {
+
+        System.out.println("This class is deprecated and will be removed in the next version.");
+        System.out.println("Use the Unit tests instead.");
+
+        throw new Exception("This class is deprecated and will be removed in the next version.");
+    }
+
+    /*// Configuration
+    private static final String INPUT_FILE = "src/example/docker-compose.in.yaml";
+    private static final String OUTPUT_FILE = "src/example/docker-compose.out.yaml";
+    private static final boolean OPEN_OUTPUT_FILE = true;
+
+    // Logger
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
-    private static final String INPUT_FILE = "src/docker-compose/docker-compose.in.yaml";
-    private static final String OUTPUT_FILE = "src/docker-compose/docker-compose.out.yaml";
 
     public static void main(String[] args) {
 
@@ -21,16 +39,24 @@ public class Main {
 
             String content = readInput();
 
-            DockerComposeFile dockerComposeFile = DockerComposeYamlConverter.parse(content);
-            dockerComposeFile.setProperty(new String[]{"services", "app", "image"}, "changed:latest");
+            YamlFile yamlFile = YamlConverter.parse(content);
 
-            String newContent = DockerComposeYamlConverter.dump(dockerComposeFile);
+            // this works
+            yamlFile.setProperty(new String[]{"services", "app", "image"}, "CHANGED");
+
+            // this also works
+            yamlFile.setProperty("services.app.container_name", "CHANGED");
+
+            // this property does not exist
+            yamlFile.setProperty("services.app.non_existing_property", "CHANGED");
+
+            String newContent = YamlConverter.dump(yamlFile);
             writeOutput(newContent);
 
-            System.out.println("Updated docker-compose.yaml!");
+            LOGGER.info("Updated docker-compose.yaml!");
 
-            if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().open(new java.io.File(OUTPUT_FILE));
+            if (Desktop.isDesktopSupported() && OPEN_OUTPUT_FILE) {
+                Desktop.getDesktop().open(new File(OUTPUT_FILE));
             }
 
         } catch (Exception e) {
@@ -69,5 +95,5 @@ public class Main {
         Path outputPath = Paths.get(OUTPUT_FILE);
         Files.writeString(outputPath, content);
         LOGGER.info("Output file written: " + outputPath.toAbsolutePath());
-    }
+    }*/
 }
