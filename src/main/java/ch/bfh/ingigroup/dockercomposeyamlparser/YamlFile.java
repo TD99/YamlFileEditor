@@ -1,5 +1,6 @@
 package ch.bfh.ingigroup.dockercomposeyamlparser;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -86,7 +87,7 @@ public class YamlFile {
 
         this.yamlData = new YamlDataMap(content);
 
-        dirtyCache();
+        setCacheDirty();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -104,14 +105,24 @@ public class YamlFile {
             YamlDataMap currentData = yamlData;
 
             for (int i = 0; i < propertyPath.length; i++) {
-                Object value = currentData.get(propertyPath[i]);
+                String key = propertyPath[i];
+                Object value = currentData.get(key);
 
-                if (i == propertyPath.length -1) {
-                    return value != null;
-                } else if (value instanceof YamlDataMap yamlDataMap) {
+                // Key not found
+                if (value == null) {
+                    return false;
+                }
+
+                // If this is the last key, we found the property
+                if (i == propertyPath.length - 1) {
+                    return true;
+                }
+
+                if (value instanceof YamlDataMap yamlDataMap) {
+                    // Go deeper into the nested map
                     currentData = yamlDataMap;
                 } else {
-                    return false;
+                    return false; // Not a nested map, can't go deeper
                 }
             }
 
@@ -137,9 +148,8 @@ public class YamlFile {
      *
      * @param propertyPath The property path.
      * @return The property value.
-     * @throws YamlPropertyException If an error occurred while getting the property.
      */
-    public Optional<String> getProperty(String[] propertyPath) throws YamlPropertyException {
+    public Optional<String> getProperty(String[] propertyPath) {
 
         try {
             YamlDataMap currentData = yamlData;
@@ -150,13 +160,19 @@ public class YamlFile {
                 if (value instanceof YamlDataMap) {
                     currentData = (YamlDataMap) value;
                 } else {
-                    return Optional.empty();
+                    throw new YamlPropertyException("Property path not found: " + String.join(".", propertyPath));
                 }
             }
 
-            return Optional.ofNullable(currentData.get(propertyPath[propertyPath.length - 1]).toString());
+            Object finalValue = currentData.get(propertyPath[propertyPath.length - 1]);
+
+            if (finalValue == null) {
+                throw new YamlPropertyException("Property not found: " + String.join(".", propertyPath));
+            }
+
+            return Optional.ofNullable(finalValue.toString());
         } catch (Exception e) {
-            throw new YamlPropertyException(e);
+            return Optional.empty();
         }
     }
 
@@ -165,9 +181,8 @@ public class YamlFile {
      *
      * @param propertyPathString The property path as a string.
      * @return The property value.
-     * @throws YamlPropertyException If an error occurred while getting the property.
      */
-    public Optional<String> getProperty(String propertyPathString) throws YamlPropertyException {
+    public Optional<String> getProperty(String propertyPathString) {
 
         return getProperty(getPropertyPath(propertyPathString));
     }
@@ -177,6 +192,7 @@ public class YamlFile {
      *
      * @param propertyPath The property path.
      * @param value The value to set.
+     * @throws YamlPropertyException If an error occurs while setting the property.
      */
     public void setProperty(String[] propertyPath, String value) throws YamlPropertyException {
 
@@ -184,14 +200,29 @@ public class YamlFile {
             YamlDataMap currentData = yamlData;
 
             for (int i = 0; i < propertyPath.length - 1; i++) {
-                currentData = (YamlDataMap) currentData.computeIfAbsent(propertyPath[i], k -> new YamlDataMap());
+                String key = propertyPath[i];
+
+                Object existingValue = currentData.get(key);
+
+                if (existingValue == null) {
+                    YamlDataMap newMap = new YamlDataMap();
+                    currentData.put(key, newMap);
+                    currentData = newMap;
+                } else if (existingValue instanceof Map<?, ?> nestedMap) {
+                    YamlDataMap wrappedMap = new YamlDataMap(nestedMap);
+                    currentData.put(key, wrappedMap);
+                    currentData = wrappedMap;
+                } else {
+                    throw new YamlPropertyException("Cannot set property at path: " + String.join(".", propertyPath) +
+                            " because a non-map value exists at: " + key);
+                }
             }
 
             currentData.put(propertyPath[propertyPath.length - 1], value);
 
-            dirtyCache();
+            setCacheDirty();
         } catch (Exception e) {
-            throw new YamlPropertyException(e);
+            throw new YamlPropertyException("An error occurred while setting the property: " + String.join(".", propertyPath), e);
         }
     }
 
@@ -204,42 +235,6 @@ public class YamlFile {
     public void setProperty(String propertyPathString, String value) throws YamlPropertyException {
 
         setProperty(getPropertyPath(propertyPathString), value);
-    }
-
-    /**
-     * Removes a property.
-     *
-     * @param propertyPath The property path.
-     */
-    public void removeProperty(String[] propertyPath) {
-
-        try {
-            YamlDataMap currentData = yamlData;
-
-            for (String s : propertyPath) {
-                if (currentData.get(s) instanceof YamlDataMap yamlDataMap) {
-                    currentData = yamlDataMap;
-                } else {
-                    return;
-                }
-            }
-
-            currentData.remove(propertyPath[propertyPath.length - 1]);
-
-            dirtyCache();
-        } catch (Exception e) {
-            throw new YamlPropertyException(e);
-        }
-    }
-
-    /**
-     * Removes a property.
-     *
-     * @param propertyPathString The property path as a string.
-     */
-    public void removeProperty(String propertyPathString) {
-
-        removeProperty(getPropertyPath(propertyPathString));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -272,12 +267,13 @@ public class YamlFile {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Private Methods.
+
     private String[] getPropertyPath(String propertyPathString) {
 
         return propertyPathString.split(DELIMITER_REGEX);
     }
 
-    private void dirtyCache() {
+    private void setCacheDirty() {
 
         isCacheDirty = true;
     }
