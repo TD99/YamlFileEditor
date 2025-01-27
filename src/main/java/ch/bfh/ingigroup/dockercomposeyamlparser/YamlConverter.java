@@ -15,18 +15,20 @@ import org.yaml.snakeyaml.error.YAMLException;
  */
 public class YamlConverter {
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Constants.
+
     /**
      * The DumperOptions of the YamlConverter class.
      */
-    private static final DumperOptions dumperOptions;
+    private static final DumperOptions DUMPER_OPTIONS = new DumperOptions() {{
 
-    // Static initializer
-    static {
+        setPrettyFlow(true);
+        setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+    }};
 
-        dumperOptions = new DumperOptions();
-        dumperOptions.setPrettyFlow(true);
-        dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-    }
+    // -----------------------------------------------------------------------------------------------------------------
+    // Utility methods.
 
     /**
      * The parse method of the YamlConverter class.
@@ -44,7 +46,8 @@ public class YamlConverter {
         }
 
         try {
-            return new Yaml().load(content);
+            Object object = new Yaml().load(content);
+            return new YamlDataMap(object);
         } catch (YAMLException e) {
             throw new YamlParseException(e);
         }
@@ -61,8 +64,12 @@ public class YamlConverter {
      */
     public static String dump(YamlDataMap yamlDataMap) throws YamlDumpException {
 
+        if (yamlDataMap == null || yamlDataMap.isEmpty()) {
+            return "";
+        }
+
         try {
-            return new Yaml(dumperOptions).dump(yamlDataMap);
+            return new Yaml(DUMPER_OPTIONS).dump(yamlDataMap);
         } catch (YAMLException e) {
             throw new YamlDumpException(e);
         }

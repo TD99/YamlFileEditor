@@ -100,7 +100,25 @@ public class YamlFile {
      */
     public boolean hasProperty(String[] propertyPath) {
 
-        return getProperty(propertyPath).isPresent();
+        try {
+            YamlDataMap currentData = yamlData;
+
+            for (int i = 0; i < propertyPath.length; i++) {
+                Object value = currentData.get(propertyPath[i]);
+
+                if (i == propertyPath.length -1) {
+                    return value != null;
+                } else if (value instanceof YamlDataMap yamlDataMap) {
+                    currentData = yamlDataMap;
+                } else {
+                    return false;
+                }
+            }
+
+            return false;
+        } catch (YamlPropertyException e) {
+            return false;
+        }
     }
 
     /**
@@ -119,6 +137,7 @@ public class YamlFile {
      *
      * @param propertyPath The property path.
      * @return The property value.
+     * @throws YamlPropertyException If an error occurred while getting the property.
      */
     public Optional<String> getProperty(String[] propertyPath) throws YamlPropertyException {
 
@@ -146,8 +165,9 @@ public class YamlFile {
      *
      * @param propertyPathString The property path as a string.
      * @return The property value.
+     * @throws YamlPropertyException If an error occurred while getting the property.
      */
-    public Optional<String> getProperty(String propertyPathString) {
+    public Optional<String> getProperty(String propertyPathString) throws YamlPropertyException {
 
         return getProperty(getPropertyPath(propertyPathString));
     }
@@ -223,7 +243,7 @@ public class YamlFile {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // HashCode and Equals
+    // HashCode and Equals.
 
     /**
      * The equals method of the YamlFile class.

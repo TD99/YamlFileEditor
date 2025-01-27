@@ -38,4 +38,4 @@ build/
 .DS_Store
 
 ### Unit Tests ###
-/src/example/docker-compose.out.yaml
+docker-compose.out.yaml

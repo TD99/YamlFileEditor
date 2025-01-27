@@ -1,4 +1,4 @@
-version: '3.9' # Specify the Docker Compose file format version
+version: '3.9'
 
 services:
   app:
@@ -8,17 +8,17 @@ services:
       context: ./app
       dockerfile: Dockerfile
     ports:
-      - "3000:3000" # Expose container port 3000 to host port 3000
+      - "3000:3000"
     environment:
       NODE_ENV: development
       PORT: 3000
     env_file:
-      - ./config/.env # Load environment variables from a file
+      - ./config/.env
     volumes:
-      - ./app:/usr/src/app # Mount host directory to container
+      - ./app:/usr/src/app
       - logs:/var/log/myapp
     depends_on:
-      - db # Ensure db starts before app
+      - db
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s
@@ -44,7 +44,7 @@ services:
       MYSQL_USER: app_user
       MYSQL_PASSWORD: secret
     volumes:
-      - db_data:/var/lib/mysql # Persist database data
+      - db_data:/var/lib/mysql
     networks:
       - app_network
     restart: unless-stopped
