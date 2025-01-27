@@ -11,10 +11,16 @@ import org.yaml.snakeyaml.error.YAMLException;
  */
 public class YamlPropertyException extends YAMLException {
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Constants.
+
     /**
      * The default message of YamlParseException.
      */
     public static final String DEFAULT_MESSAGE = "An error occurred while accessing a YAML property";
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Constructors.
 
     /**
      * The constructor of the YamlParseException class.

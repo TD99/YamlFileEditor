@@ -11,10 +11,16 @@ import org.yaml.snakeyaml.error.YAMLException;
  */
 public class YamlDumpException extends YAMLException {
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Constants.
+
     /**
      * The default message of YamlDumpException.
      */
     public static final String DEFAULT_MESSAGE = "An error occurred while dumping YAML content";
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Constructors.
 
     /**
      * The constructor of the YamlDumpException class.

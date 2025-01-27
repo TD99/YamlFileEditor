@@ -11,10 +11,16 @@ import org.yaml.snakeyaml.error.YAMLException;
  */
 public class YamlParseException extends YAMLException {
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Constants.
+
     /**
      * The default message of YamlParseException.
      */
     public static final String DEFAULT_MESSAGE = "Invalid YAML content";
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Constructors.
 
     /**
      * The constructor of the YamlParseException class.
