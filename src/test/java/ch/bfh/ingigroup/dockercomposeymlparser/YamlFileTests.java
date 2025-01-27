@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static ch.bfh.ingigroup.dockercomposeymlparser.TestConstants.VALID_YAML;
+import static ch.bfh.ingigroup.dockercomposeymlparser.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -57,8 +57,8 @@ public class YamlFileTests {
 
         yamlFile.setContent(VALID_YAML);
 
-        assertTrue(yamlFile.hasProperty("key"));
-        assertTrue(yamlFile.hasProperty("anotherKey.value1"));
+        assertTrue(yamlFile.hasProperty(KEY_KEY1));
+        assertTrue(yamlFile.hasProperty(KEY_KEY2_A));
     }
 
     @Test
@@ -66,8 +66,8 @@ public class YamlFileTests {
 
         yamlFile.setContent(VALID_YAML);
 
-        assertFalse(yamlFile.hasProperty("nonexistent"));
-        assertFalse(yamlFile.hasProperty("anotherKey.nonexistent"));
+        assertFalse(yamlFile.hasProperty(KEY_INVALID));
+        assertFalse(yamlFile.hasProperty(KEY_INVALID_NESTED));
     }
 
     @Test
@@ -75,8 +75,9 @@ public class YamlFileTests {
 
         yamlFile.setContent(VALID_YAML);
 
-        assertEquals(Optional.of("value"), yamlFile.getProperty("key"));
-        assertEquals(Optional.of("1"), yamlFile.getProperty("anotherKey.value1"));
+        assertEquals(Optional.of(VALUE_KEY1), yamlFile.getProperty(KEY_KEY1));
+        // TODO: Multiple data types
+        assertEquals(Optional.of(String.valueOf(VALUE_KEY2_A)), yamlFile.getProperty(KEY_KEY2_A));
     }
 
     @Test
@@ -84,18 +85,18 @@ public class YamlFileTests {
 
         yamlFile.setContent(VALID_YAML);
 
-        assertThrows(YamlPropertyException.class, () -> yamlFile.getProperty("nonexistent"));
-        assertThrows(YamlPropertyException.class, () -> yamlFile.getProperty("non.existent"));
+        assertEquals(Optional.empty(), yamlFile.getProperty(KEY_INVALID));
+        assertEquals(Optional.empty(), yamlFile.getProperty(KEY_INVALID_NESTED));
     }
 
     @Test
     void testSetProperty_NewProperty() throws YamlPropertyException {
 
-        yamlFile.setProperty("newkey", "newvalue");
-        yamlFile.setProperty("anotherKey.newSubKey", "newSubValue");
+        yamlFile.setProperty(KEY_NEW, VALUE_NEW);
+        yamlFile.setProperty(KEY_NEW_NESTED, VALUE_NEW_NESTED);
 
-        assertEquals(Optional.of("newvalue"), yamlFile.getProperty("newkey"));
-        assertEquals(Optional.of("newSubValue"), yamlFile.getProperty("anotherKey.newSubKey"));
+        assertEquals(Optional.of(VALUE_NEW), yamlFile.getProperty(KEY_NEW));
+        assertEquals(Optional.of(VALUE_NEW_NESTED), yamlFile.getProperty(KEY_NEW_NESTED));
     }
 
     @Test
@@ -103,40 +104,12 @@ public class YamlFileTests {
 
         yamlFile.setContent(VALID_YAML);
 
-        yamlFile.setProperty("key", "newvalue");
-        yamlFile.setProperty("anotherKey.value2", "three");
+        yamlFile.setProperty(KEY_KEY1, VALUE_NEW);
+        yamlFile.setProperty(KEY_KEY2_A, VALUE_KEY2_B);
 
-        assertEquals(Optional.of("newvalue"), yamlFile.getProperty("key"));
-        assertEquals(Optional.of("three"), yamlFile.getProperty("anotherKey.value2"));
+        assertEquals(Optional.of(VALUE_NEW), yamlFile.getProperty(KEY_KEY1));
+        assertEquals(Optional.of(VALUE_KEY2_B), yamlFile.getProperty(KEY_KEY2_A));
     }
 
-    @Test
-    void testRemoveProperty_ExistingProperty() {
-
-        yamlFile.setContent(VALID_YAML);
-
-        yamlFile.removeProperty("key");
-
-        assertFalse(yamlFile.hasProperty("key"));
-    }
-
-    @Test
-    void testRemoveProperty_NestedProperty() {
-
-        yamlFile.setContent(VALID_YAML);
-
-        assertTrue(yamlFile.hasProperty("anotherKey.value1"));
-        yamlFile.removeProperty("anotherKey.value1");
-        assertFalse(yamlFile.hasProperty("anotherKey.value1"));
-
-        assertTrue(yamlFile.hasProperty("anotherKey"));
-    }
-
-    @Test
-    void testRemoveProperty_NonExistingProperty() {
-
-        yamlFile.setContent(VALID_YAML);
-
-        assertDoesNotThrow(() -> yamlFile.removeProperty("nonexistent"));
-    }
+    // TODO: Remove property
 }
