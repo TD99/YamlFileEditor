@@ -56,7 +56,7 @@ public final class DockerComposeIOTests {
     void testYamlFileImageManipulation() throws Exception {
 
         YamlFile yamlFile = new YamlFile(CONTENT);
-        yamlFile.setProperty("services.app.image", "CHANGED:1");
+        yamlFile.setProperty("services.app.image", "changed:1");
 
         String newContent = yamlFile.getContent();
         Files.writeString(OUTPUT_FILE_PATH, newContent);

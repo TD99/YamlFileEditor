@@ -25,6 +25,7 @@ public class YamlConverter {
 
         setPrettyFlow(true);
         setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        setDefaultScalarStyle(DumperOptions.ScalarStyle.PLAIN);
     }};
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -74,4 +75,5 @@ public class YamlConverter {
             throw new YamlDumpException(e);
         }
     }
+
 }
