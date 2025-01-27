@@ -79,6 +79,38 @@ public class YamlDataMap extends LinkedHashMap<String, Object> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    // Get.
+
+    /**
+     * Retrieves the value associated with the specified key.
+     * If the value is a nested map, it is wrapped in a YamlDataMap instance.
+     *
+     * @param key The key to retrieve.
+     * @return The value associated with the key, or null if the key does not exist.
+     */
+    @Override
+    public Object get(Object key) {
+
+        Object value = super.get(key);
+
+        if (value instanceof Map<?, ?> nestedMap) {
+            LinkedHashMap<String, Object> validatedMap = new LinkedHashMap<>();
+
+            for (Map.Entry<?, ?> entry : nestedMap.entrySet()) {
+                if (!(entry.getKey() instanceof String)) {
+                    throw new ClassCastException("Key in nested map is not a String: " + entry.getKey());
+                }
+
+                validatedMap.put((String) entry.getKey(), entry.getValue());
+            }
+
+            return new YamlDataMap(validatedMap);
+        }
+
+        return value;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
     // ToString.
 
     /**
