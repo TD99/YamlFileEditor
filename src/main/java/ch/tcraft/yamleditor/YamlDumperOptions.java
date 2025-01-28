@@ -1,4 +1,4 @@
-package ch.bfh.ingigroup.dockercomposeyamlparser;
+package ch.tcraft.yamleditor;
 
 import org.yaml.snakeyaml.DumperOptions;
 

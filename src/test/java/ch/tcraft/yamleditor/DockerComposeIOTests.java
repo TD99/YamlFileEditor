@@ -1,14 +1,12 @@
-package ch.bfh.ingigroup.dockercomposeymlparser;
+package ch.tcraft.yamleditor;
 
-import ch.bfh.ingigroup.dockercomposeyamlparser.YamlConverter;
-import ch.bfh.ingigroup.dockercomposeyamlparser.YamlFile;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static ch.bfh.ingigroup.dockercomposeymlparser.TestConstants.*;
+import static ch.tcraft.yamleditor.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**

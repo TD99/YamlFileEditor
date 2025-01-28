@@ -1,4 +1,4 @@
-package ch.bfh.ingigroup.dockercomposeyamlparser;
+package ch.tcraft.yamleditor;
 
 import java.util.Map;
 import java.util.Objects;

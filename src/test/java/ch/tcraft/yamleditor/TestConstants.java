@@ -1,7 +1,4 @@
-package ch.bfh.ingigroup.dockercomposeymlparser;
-
-import ch.bfh.ingigroup.dockercomposeyamlparser.YamlDataMap;
-import ch.bfh.ingigroup.dockercomposeyamlparser.YamlDumperOptions;
+package ch.tcraft.yamleditor;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
