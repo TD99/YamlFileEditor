@@ -15,6 +15,7 @@
         <license>
             <name>MIT</name>
             <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
         </license>
     </licenses>
 
@@ -29,12 +30,24 @@
         </developer>
     </developers>
 
+    <!-- Project Organization -->
+    <organization>
+        <name>T-Craft</name>
+        <url>https://tcraft.link</url>
+    </organization>
+
     <!-- Project Source Control Management -->
     <scm>
         <connection>scm:git:https://github.com/TD99/YamlFileEditor.git</connection>
         <developerConnection>scm:git:https://github.com/TD99/YamlFileEditor.git</developerConnection>
         <url>https://github.com/TD99/YamlFileEditor</url>
     </scm>
+
+    <!-- Project Issue Management -->
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/TD99/YamlFileEditor/issues</url>
+    </issueManagement>
 
     <!-- Maven Coordinates -->
     <groupId>ch.tcraft</groupId>
