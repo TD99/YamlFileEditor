@@ -5,7 +5,7 @@
 
     <!-- Project Information -->
     <name>YAML File Editor</name>
-    <description>Parse YAML content, edit them and dump them back</description>
+    <description>A library to parse, edit, and serialize YAML content</description>
     <url>https://github.com/TD99/YamlFileEditor</url>
 
     <!-- Project License -->
