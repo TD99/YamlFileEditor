@@ -24,9 +24,10 @@ public final class TestConstants {
      */
     public static final String VALID_YAML = """
             key1: value
-            key2:
-              a: 1
+            key2: {
+              a: 1,
               b: two
+            }
             """;
 
     /**

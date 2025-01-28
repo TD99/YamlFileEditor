@@ -19,17 +19,40 @@ public class YamlConverter {
     // Constants.
 
     /**
-     * The DumperOptions of the YamlConverter class.
+     * The DEFAULT_DUMPER_OPTIONS of the YamlConverter class.
      */
-    private static final DumperOptions DUMPER_OPTIONS = new DumperOptions() {{
+    private final static YamlDumperOptions DEFAULT_DUMPER_OPTIONS = new YamlDumperOptions() {{
 
+        setDefaultFlowStyle(FlowStyle.AUTO);
         setPrettyFlow(true);
-        setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        setDefaultScalarStyle(DumperOptions.ScalarStyle.PLAIN);
+        setDefaultScalarStyle(ScalarStyle.PLAIN);
+        setIndent(2);
+        setProcessComments(true);
+        setRemoveEmptyLines(true);
     }};
 
     // -----------------------------------------------------------------------------------------------------------------
+    // Fields.
+
+    /**
+     * The DumperOptions of the YamlConverter class.
+     */
+    private static YamlDumperOptions DUMPER_OPTIONS = DEFAULT_DUMPER_OPTIONS;
+
+    // -----------------------------------------------------------------------------------------------------------------
     // Utility methods.
+
+    /**
+     * The setDumperOptions method of the YamlConverter class.
+     * <p>
+     *     The setDumperOptions method is used to set the DumperOptions of the YamlConverter class.
+     * </p>
+     * @param dumperOptions The DumperOptions to set.
+     */
+    public static void setDumperOptions(YamlDumperOptions dumperOptions) {
+
+        DUMPER_OPTIONS = dumperOptions;
+    }
 
     /**
      * The parse method of the YamlConverter class.
@@ -70,10 +93,37 @@ public class YamlConverter {
         }
 
         try {
-            return new Yaml(DUMPER_OPTIONS).dump(yamlDataMap);
+            String dumpedYaml = new Yaml(DUMPER_OPTIONS).dump(yamlDataMap);
+
+            if (DUMPER_OPTIONS.isRemoveEmptyLines()) {
+                dumpedYaml = removeEmptyLines(dumpedYaml);
+            }
+
+            return dumpedYaml;
         } catch (YAMLException e) {
             throw new YamlDumpException(e);
         }
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Private helper methods.
+
+    /**
+     * The removeEmptyLines method of the YamlConverter class.
+     *
+     * @param content The content to remove empty lines from.
+     * @return The content without empty lines.
+     */
+    private static String removeEmptyLines(String content) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String line : content.split("\n")) {
+            if (!line.trim().isEmpty()) {
+                stringBuilder.append(line).append("\n");
+            }
+        }
+
+        return stringBuilder.toString();
+    }
 }
