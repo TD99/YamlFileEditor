@@ -268,16 +268,28 @@ public class YamlFile {
     // -----------------------------------------------------------------------------------------------------------------
     // Private Methods.
 
+    /**
+     * Gets the property path.
+     *
+     * @param propertyPathString The property path as a string.
+     * @return The property path as an array of strings.
+     */
     private String[] getPropertyPath(String propertyPathString) {
 
         return propertyPathString.split(DELIMITER_REGEX);
     }
 
+    /**
+     * Sets the cache to dirty.
+     */
     private void setCacheDirty() {
 
         isCacheDirty = true;
     }
 
+    /**
+     * Updates the cache.
+     */
     private void updateCache() {
 
         contentCache = yamlData.toString();

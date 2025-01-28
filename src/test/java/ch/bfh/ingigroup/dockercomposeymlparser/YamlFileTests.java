@@ -1,7 +1,9 @@
 package ch.bfh.ingigroup.dockercomposeymlparser;
 
+import ch.bfh.ingigroup.dockercomposeyamlparser.YamlConverter;
 import ch.bfh.ingigroup.dockercomposeyamlparser.YamlFile;
 import ch.bfh.ingigroup.dockercomposeyamlparser.YamlPropertyException;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +24,17 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class YamlFileTests {
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Tests.
+
     private YamlFile yamlFile;
+
+    @BeforeAll
+    static void prepare() {
+
+        // The tests were only tested with the default options
+        YamlConverter.setDumperOptions(DEFAULT_DUMPER_OPTIONS);
+    }
 
     @BeforeEach
     void setUp() {
@@ -110,6 +122,4 @@ public class YamlFileTests {
         assertEquals(Optional.of(VALUE_NEW), yamlFile.getProperty(KEY_KEY1));
         assertEquals(Optional.of(VALUE_KEY2_B), yamlFile.getProperty(KEY_KEY2_A));
     }
-
-    // TODO: Remove property
 }

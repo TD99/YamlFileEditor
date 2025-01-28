@@ -3,6 +3,7 @@ package ch.bfh.ingigroup.dockercomposeymlparser;
 import ch.bfh.ingigroup.dockercomposeyamlparser.YamlConverter;
 import ch.bfh.ingigroup.dockercomposeyamlparser.YamlDataMap;
 import ch.bfh.ingigroup.dockercomposeyamlparser.YamlParseException;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static ch.bfh.ingigroup.dockercomposeymlparser.TestConstants.*;
@@ -19,6 +20,16 @@ import static org.junit.jupiter.api.Assertions.*;
  * @version 1.0
  */
 public final class YamlConverterTests {
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Tests.
+
+    @BeforeAll
+    static void prepare() {
+
+        // The tests were only tested with the default options
+        YamlConverter.setDumperOptions(DEFAULT_DUMPER_OPTIONS);
+    }
 
     @Test
     void testParse_ValidYaml() {

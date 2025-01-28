@@ -1,5 +1,6 @@
 package ch.bfh.ingigroup.dockercomposeymlparser;
 
+import ch.bfh.ingigroup.dockercomposeyamlparser.YamlConverter;
 import ch.bfh.ingigroup.dockercomposeyamlparser.YamlFile;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,17 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public final class DockerComposeIOTests {
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Tests.
+
     private static String CONTENT;
+
+    @BeforeAll
+    static void prepare() {
+
+        // The tests were only tested with the default options
+        YamlConverter.setDumperOptions(DEFAULT_DUMPER_OPTIONS);
+    }
 
     @BeforeAll
     static void prepareInputFile() throws IOException {
@@ -64,6 +75,9 @@ public final class DockerComposeIOTests {
 
         assertTrue(isEquals(expectedContent, outputContent));
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Private helper methods.
 
     /**
      * Checks if the content of two strings is equal.

@@ -1,6 +1,7 @@
 package ch.bfh.ingigroup.dockercomposeymlparser;
 
 import ch.bfh.ingigroup.dockercomposeyamlparser.YamlDataMap;
+import ch.bfh.ingigroup.dockercomposeyamlparser.YamlDumperOptions;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,6 +51,19 @@ public final class TestConstants {
      * An invalid YAML string.
      */
     public static final String INVALID_YAML = ": invalid: yaml";
+
+    /**
+     * The DEFAULT_DUMPER_OPTIONS of the YamlConverter class.
+     */
+    public static final YamlDumperOptions DEFAULT_DUMPER_OPTIONS = new YamlDumperOptions() {{
+
+        setDefaultFlowStyle(FlowStyle.AUTO);
+        setPrettyFlow(true);
+        setDefaultScalarStyle(ScalarStyle.PLAIN);
+        setIndent(2);
+        setProcessComments(true);
+        setRemoveEmptyLines(true);
+    }};
 
     // -----------------------------------------------------------------------------------------------------------------
     // Key constants.
