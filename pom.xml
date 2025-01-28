@@ -2,35 +2,93 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ch.tcraft.yamleditor</groupId>
-    <artifactId>DockerComposeYamlParser</artifactId>
-    <version>1.0</version>
+    <!-- Project Information -->
+    <name>YAML File Editor</name>
+    <description>Parse YAML content, edit them and dump them back</description>
+    <url>https://github.com/TD99/YamlFileEditor</url>
 
+    <!-- Project License -->
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <!-- Project Developers -->
+    <developers>
+        <developer>
+            <id>TD99</id>
+            <name>TD99</name>
+            <email>admin@tcraft.ch</email>
+            <organization>T-Craft</organization>
+            <organizationUrl>https://tcraft.link</organizationUrl>
+        </developer>
+    </developers>
+
+    <!-- Project Source Control Management -->
+    <scm>
+        <connection>scm:git:https://github.com/TD99/YamlFileEditor.git</connection>
+        <developerConnection>scm:git:https://github.com/TD99/YamlFileEditor.git</developerConnection>
+        <url>https://github.com/TD99/YamlFileEditor</url>
+    </scm>
+
+    <!-- Maven Coordinates -->
+    <groupId>ch.tcraft</groupId>
+    <artifactId>yamleditor</artifactId>
+    <version>1.0.0</version>
+
+    <!-- Distribution Management -->
+    <distributionManagement>
+        <repository>
+            <id>maven-central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </distributionManagement>
+
+    <!-- Properties -->
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <java.version>21</java.version>
+        <snakeyaml.version>2.3</snakeyaml.version>
+        <junit.jupiter.version>5.11.4</junit.jupiter.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
 
+    <!-- Dependencies -->
     <dependencies>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.18.2</version>
+            <version>${snakeyaml.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.11.4</version>
+            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
+    <!-- Build Configuration -->
+    <packaging>jar</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
