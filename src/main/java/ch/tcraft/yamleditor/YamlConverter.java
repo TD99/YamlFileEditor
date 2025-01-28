@@ -20,7 +20,7 @@ public class YamlConverter {
     /**
      * The DEFAULT_DUMPER_OPTIONS of the YamlConverter class.
      */
-    private final static YamlDumperOptions DEFAULT_DUMPER_OPTIONS = new YamlDumperOptions() {{
+    private static final YamlDumperOptions DEFAULT_DUMPER_OPTIONS = new YamlDumperOptions() {{
 
         setDefaultFlowStyle(FlowStyle.AUTO);
         setPrettyFlow(true);
@@ -82,7 +82,7 @@ public class YamlConverter {
      * <p>
      *     The dump method is used to convert a Map to a YAML string content.
      * </p>
-     * @param yamlMap The map to dump.
+     * @param yamlDataMap The map to dump.
      * @return The dumped content.
      * @throws YamlDumpException If an error occurred while dumping the content.
      */
@@ -125,5 +125,16 @@ public class YamlConverter {
         }
 
         return stringBuilder.toString();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Constructor.
+
+    /**
+     * The constructor of the YamlConverter class.
+     */
+    private YamlConverter() {
+
+        // Prevent instantiation.
     }
 }

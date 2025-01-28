@@ -35,11 +35,21 @@ public class YamlDumperOptions extends DumperOptions {
     // -----------------------------------------------------------------------------------------------------------------
     // Getters and setters.
 
+    /**
+     * Getter for the removeEmptyLines field.
+     *
+     * @return The removeEmptyLines field.
+     */
     public boolean isRemoveEmptyLines() {
 
         return removeEmptyLines;
     }
 
+    /**
+     * Setter for the removeEmptyLines field.
+     *
+     * @param removeEmptyLines The removeEmptyLines field.
+     */
     public void setRemoveEmptyLines(boolean removeEmptyLines) {
 
         this.removeEmptyLines = removeEmptyLines;

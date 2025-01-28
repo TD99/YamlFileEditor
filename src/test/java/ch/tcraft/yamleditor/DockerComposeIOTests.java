@@ -1,5 +1,6 @@
 package ch.tcraft.yamleditor;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -57,6 +58,14 @@ public final class DockerComposeIOTests {
         Files.createFile(OUTPUT_FILE_PATH);
 
         assertTrue(Files.exists(OUTPUT_FILE_PATH));
+    }
+
+    @AfterAll
+    static void cleanUp() throws IOException {
+
+        if (Files.exists(OUTPUT_FILE_PATH)) {
+            Files.delete(OUTPUT_FILE_PATH);
+        }
     }
 
     @Test
