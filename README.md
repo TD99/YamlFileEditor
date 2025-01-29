@@ -99,8 +99,8 @@ implementation group: 'ch.tcraft', name: 'yamleditor', version: '1.0.0'
 ## Known Issues
 - **Formatting**: The library may not preserve the original formatting of the YAML content.
   However, it is possible to modify the dumper options to achieve a specific output format.
-- **Non-String Values**: The library treats all values as strings, which may cause issues with complex data structures.
-  This will be addressed in future updates.
+- **Non-String Values**: The library treats all values as strings, which may cause issues with complex data structures. This will be addressed in future updates.
+- **Missing remove feature**: It is currently not possible to remove properties. This will be addressed in future updates.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
