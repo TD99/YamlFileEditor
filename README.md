@@ -18,14 +18,23 @@ Even though the library was originally designed to work with Docker Compose file
 - **SnakeYAML**: The library internally uses the SnakeYAML parser for YAML processing.
 
 ### Installation
+
+#### Maven
 Add the following dependency to your `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>(insert group id here)</groupId>
-    <artifactId>(insert artifact id here)</artifactId>
-    <version>(insert version here)</version>
+    <groupId>ch.tcraft</groupId>
+    <artifactId>yamleditor</artifactId>
+    <version>1.0.0</version>
 </dependency>
+```
+
+#### Gradle
+Add the following dependency to your `build.gradle`:
+
+```gradle
+implementation group: 'ch.tcraft', name: 'yamleditor', version: '1.0.0'
 ```
 
 ### Usage
