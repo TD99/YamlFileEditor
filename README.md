@@ -18,14 +18,23 @@ Even though the library was originally designed to work with Docker Compose file
 - **SnakeYAML**: The library internally uses the SnakeYAML parser for YAML processing.
 
 ### Installation
+
+#### Maven
 Add the following dependency to your `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>(insert group id here)</groupId>
-    <artifactId>(insert artifact id here)</artifactId>
-    <version>(insert version here)</version>
+    <groupId>ch.tcraft</groupId>
+    <artifactId>yamleditor</artifactId>
+    <version>1.0.0</version>
 </dependency>
+```
+
+#### Gradle
+Add the following dependency to your `build.gradle`:
+
+```gradle
+implementation group: 'ch.tcraft', name: 'yamleditor', version: '1.0.0'
 ```
 
 ### Usage
@@ -90,8 +99,8 @@ Add the following dependency to your `pom.xml`:
 ## Known Issues
 - **Formatting**: The library may not preserve the original formatting of the YAML content.
   However, it is possible to modify the dumper options to achieve a specific output format.
-- **Non-String Values**: The library treats all values as strings, which may cause issues with complex data structures.
-  This will be addressed in future updates.
+- **Non-String Values**: The library treats all values as strings, which may cause issues with complex data structures. This will be addressed in future updates.
+- **Missing remove feature**: It is currently not possible to remove properties. This will be addressed in future updates.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
