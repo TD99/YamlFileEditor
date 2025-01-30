@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static ch.tcraft.yamleditor.TestConstants.*;
@@ -85,8 +87,33 @@ public class YamlFileTests {
         yamlFile.setContent(VALID_YAML);
 
         assertEquals(Optional.of(VALUE_KEY1), yamlFile.getProperty(KEY_KEY1));
-        // TODO: Multiple data types
-        assertEquals(Optional.of(String.valueOf(VALUE_KEY2_A)), yamlFile.getProperty(KEY_KEY2_A));
+        assertEquals(Optional.of(String.valueOf(VALUE_KEY2_A)), yamlFile.getProperty(KEY_KEY2_A, String.class));
+    }
+
+    @Test
+    void testGetProperty_WithType() throws YamlPropertyException {
+
+        String typeYaml = """
+        key1: "Hello"
+        key2: 42
+        key3: 42.5
+        key4: true
+        key5:
+          - 1
+          - 2
+          - 3
+        key6:
+          subkey: "Nested"
+        """;
+
+        yamlFile.setContent(typeYaml);
+
+        assertEquals(Optional.of("Hello"), yamlFile.getProperty("key1", String.class));
+        assertEquals(Optional.of(42), yamlFile.getProperty("key2", Integer.class));
+        assertEquals(Optional.of(42.5), yamlFile.getProperty("key3", Double.class));
+        assertEquals(Optional.of(true), yamlFile.getProperty("key4", Boolean.class));
+        assertEquals(Optional.of(List.of(1, 2, 3)), yamlFile.getProperty("key5", List.class));
+        assertEquals(Optional.of(Map.of("subkey", "Nested")), yamlFile.getProperty("key6", Map.class));
     }
 
     @Test
@@ -118,5 +145,23 @@ public class YamlFileTests {
 
         assertEquals(Optional.of(VALUE_NEW), yamlFile.getProperty(KEY_KEY1));
         assertEquals(Optional.of(VALUE_KEY2_B), yamlFile.getProperty(KEY_KEY2_A));
+    }
+
+    @Test
+    void testSetProperty_WithType() throws YamlPropertyException {
+
+        yamlFile.setProperty("key1", "Hello");
+        yamlFile.setProperty("key2", 42);
+        yamlFile.setProperty("key3", 42.5);
+        yamlFile.setProperty("key4", true);
+        yamlFile.setProperty("key5", List.of(1, 2, 3));
+        yamlFile.setProperty("key6", Map.of("subkey", "Nested"));
+
+        assertEquals(Optional.of("Hello"), yamlFile.getProperty("key1", String.class));
+        assertEquals(Optional.of(42), yamlFile.getProperty("key2", Integer.class));
+        assertEquals(Optional.of(42.5), yamlFile.getProperty("key3", Double.class));
+        assertEquals(Optional.of(true), yamlFile.getProperty("key4", Boolean.class));
+        assertEquals(Optional.of(List.of(1, 2, 3)), yamlFile.getProperty("key5", List.class));
+        assertEquals(Optional.of(Map.of("subkey", "Nested")), yamlFile.getProperty("key6", Map.class));
     }
 }

@@ -1,8 +1,9 @@
 package ch.tcraft.yamleditor;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+
+import static ch.tcraft.yamleditor.YamlUtil.getPropertyPath;
 
 /**
  * YamlFile.
@@ -14,14 +15,6 @@ import java.util.Optional;
  * @author Tim Dürr
  */
 public class YamlFile {
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // Constants.
-
-    /**
-     * The delimiter regex.
-     */
-    private final static String DELIMITER_REGEX = "\\.";
 
     // -----------------------------------------------------------------------------------------------------------------
     // Fields.
@@ -101,41 +94,13 @@ public class YamlFile {
      */
     public boolean hasProperty(String[] propertyPath) {
 
-        try {
-            YamlDataMap currentData = yamlData;
-
-            for (int i = 0; i < propertyPath.length; i++) {
-                String key = propertyPath[i];
-                Object value = currentData.get(key);
-
-                // Key not found
-                if (value == null) {
-                    return false;
-                }
-
-                // If this is the last key, we found the property
-                if (i == propertyPath.length - 1) {
-                    return true;
-                }
-
-                if (value instanceof YamlDataMap yamlDataMap) {
-                    // Go deeper into the nested map
-                    currentData = yamlDataMap;
-                } else {
-                    return false; // Not a nested map, can't go deeper
-                }
-            }
-
-            return false;
-        } catch (YamlPropertyException e) {
-            return false;
-        }
+        return YamlUtil.hasProperty(yamlData, propertyPath);
     }
 
     /**
      * Checks if the file has a property.
      *
-     * @param propertyPathString The property path as a string.
+     * @param propertyPathString The property path.
      * @return True if the property exists, false otherwise.
      */
     public boolean hasProperty(String propertyPathString) {
@@ -147,33 +112,35 @@ public class YamlFile {
      * Gets a property.
      *
      * @param propertyPath The property path.
+     * @param type The type of the property.
+     * @return The property value.
+     */
+    public <T> Optional<T> getProperty(String[] propertyPath, Class<T> type) {
+
+        return YamlUtil.getProperty(yamlData, propertyPath, type);
+    }
+
+    /**
+     * Gets a property.
+     *
+     * @param propertyPath The property path.
      * @return The property value.
      */
     public Optional<String> getProperty(String[] propertyPath) {
 
-        try {
-            YamlDataMap currentData = yamlData;
+        return getProperty(propertyPath, String.class);
+    }
 
-            for (int i = 0; i < propertyPath.length - 1; i++) {
-                Object value = currentData.get(propertyPath[i]);
+    /**
+     * Gets a property.
+     *
+     * @param propertyPathString The property path as a string.
+     * @param type The type of the property.
+     * @return The property value.
+     */
+    public <T> Optional<T> getProperty(String propertyPathString, Class<T> type) {
 
-                if (value instanceof YamlDataMap) {
-                    currentData = (YamlDataMap) value;
-                } else {
-                    throw new YamlPropertyException("Property path not found: " + String.join(".", propertyPath));
-                }
-            }
-
-            Object finalValue = currentData.get(propertyPath[propertyPath.length - 1]);
-
-            if (finalValue == null) {
-                throw new YamlPropertyException("Property not found: " + String.join(".", propertyPath));
-            }
-
-            return Optional.ofNullable(finalValue.toString());
-        } catch (Exception e) {
-            return Optional.empty();
-        }
+        return getProperty(getPropertyPath(propertyPathString), type);
     }
 
     /**
@@ -184,7 +151,7 @@ public class YamlFile {
      */
     public Optional<String> getProperty(String propertyPathString) {
 
-        return getProperty(getPropertyPath(propertyPathString));
+        return getProperty(propertyPathString, String.class);
     }
 
     /**
@@ -194,36 +161,11 @@ public class YamlFile {
      * @param value The value to set.
      * @throws YamlPropertyException If an error occurs while setting the property.
      */
-    public void setProperty(String[] propertyPath, String value) throws YamlPropertyException {
+    public <T> void setProperty(String[] propertyPath, T value) throws YamlPropertyException {
 
-        try {
-            YamlDataMap currentData = yamlData;
+        YamlUtil.setProperty(yamlData, propertyPath, value);
 
-            for (int i = 0; i < propertyPath.length - 1; i++) {
-                String key = propertyPath[i];
-
-                Object existingValue = currentData.get(key);
-
-                if (existingValue == null) {
-                    YamlDataMap newMap = new YamlDataMap();
-                    currentData.put(key, newMap);
-                    currentData = newMap;
-                } else if (existingValue instanceof Map<?, ?> nestedMap) {
-                    YamlDataMap wrappedMap = new YamlDataMap(nestedMap);
-                    currentData.put(key, wrappedMap);
-                    currentData = wrappedMap;
-                } else {
-                    throw new YamlPropertyException("Cannot set property at path: " + String.join(".", propertyPath) +
-                            " because a non-map value exists at: " + key);
-                }
-            }
-
-            currentData.put(propertyPath[propertyPath.length - 1], value);
-
-            setCacheDirty();
-        } catch (Exception e) {
-            throw new YamlPropertyException("An error occurred while setting the property: " + String.join(".", propertyPath), e);
-        }
+        setCacheDirty();
     }
 
     /**
@@ -232,7 +174,7 @@ public class YamlFile {
      * @param propertyPathString The property path as a string.
      * @param value The value to set.
      */
-    public void setProperty(String propertyPathString, String value) throws YamlPropertyException {
+    public <T> void setProperty(String propertyPathString, T value) throws YamlPropertyException {
 
         setProperty(getPropertyPath(propertyPathString), value);
     }
@@ -250,7 +192,9 @@ public class YamlFile {
     public boolean equals(Object o) {
 
         if (o == null || getClass() != o.getClass()) return false;
+
         YamlFile that = (YamlFile) o;
+
         return Objects.equals(yamlData, that.yamlData);
     }
 
@@ -267,17 +211,6 @@ public class YamlFile {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Private Methods.
-
-    /**
-     * Gets the property path.
-     *
-     * @param propertyPathString The property path as a string.
-     * @return The property path as an array of strings.
-     */
-    private String[] getPropertyPath(String propertyPathString) {
-
-        return propertyPathString.split(DELIMITER_REGEX);
-    }
 
     /**
      * Sets the cache to dirty.
